@@ -6,12 +6,6 @@
 #include "TP_ThirdPerson/TP_ThirdPersonCharacter.h"
 #include "PatrollingGuard.generated.h"
 
-namespace nvidia {
-    namespace apex {
-        class Actor;
-    }
-}
-
 /**
  * 
  */
@@ -21,5 +15,5 @@ class S05_TESTINGGROUNDS_API APatrollingGuard : public ATP_ThirdPersonCharacter
 	GENERATED_BODY()
 public:
     UPROPERTY(EditInstanceOnly, Category = "Patrol Route")
-    TArray<AActor*> PatrolPointsCPP{};
+    TArray<AActor*> PatrolPointsCPP{}; // TODO remove from public and create Get method
 };
