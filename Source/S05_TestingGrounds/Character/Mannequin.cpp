@@ -19,13 +19,13 @@ AMannequin::AMannequin()
 	FirstPersonCameraComponentNew->bUsePawnControlRotation = true;
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-	Mesh1PNew = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	Mesh1PNew->SetOnlyOwnerSee(true);
-	Mesh1PNew->SetupAttachment(FirstPersonCameraComponentNew);
-	Mesh1PNew->bCastDynamicShadow = false;
-	Mesh1PNew->CastShadow = false;
-	Mesh1PNew->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
-	Mesh1PNew->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
+	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
+	Mesh1P->SetOnlyOwnerSee(true);
+	Mesh1P->SetupAttachment(FirstPersonCameraComponentNew);
+	Mesh1P->bCastDynamicShadow = false;
+	Mesh1P->CastShadow = false;
+	Mesh1P->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
+	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
 }
 
 // Called when the game starts or when spawned
@@ -38,9 +38,14 @@ void AMannequin::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("Gun blueprint missing."));
 		return;
 	}
+
 	Gun = GetWorld()->SpawnActor<AGun>(GunBlueprint);
-	Gun->AttachToComponent(Mesh1PNew, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
-	Gun->AnimInstance = Mesh1PNew->GetAnimInstance();
+
+	auto CurrentMesh = IsPlayerControlled() ? Mesh1P : GetMesh();
+	Gun->AttachToComponent(CurrentMesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+
+	Gun->AnimInstance1P = Mesh1P->GetAnimInstance();
+	Gun->AnimInstance3P = GetMesh()->GetAnimInstance();
 
 	if(InputComponent) {
 		// Bind fire event
@@ -50,6 +55,12 @@ void AMannequin::BeginPlay()
 
 void AMannequin::PullTrigger() {
 	Gun->OnFire();
+}
+
+void AMannequin::UnPossessed() {
+	Super::UnPossessed();
+	if(Gun)
+	    Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 }
 
 // Called every frame

@@ -40,11 +40,19 @@ public:
 
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UAnimMontage* FireAnimation;
+	UAnimMontage* FireAnimation1P;
 
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	class UAnimInstance* AnimInstance;
+	UAnimMontage* FireAnimation3P;
+
+	///** AnimMontage to play each time we fire */
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	//class UAnimInstance* AnimInstance;
+
+	/** AnimMontage to play each time we fire */
+	class UAnimInstance* AnimInstance1P;
+	class UAnimInstance* AnimInstance3P;
 
 	/** Fires a projectile. */
 	UFUNCTION(BlueprintCallable, Category = "Input")
