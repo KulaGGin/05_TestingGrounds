@@ -12,6 +12,13 @@ ATile::ATile()
 }
 
 void ATile::PlaceActors() {
+	FVector Min(0, -2000, 0);
+	FVector Max(4000, 2000, 0);
+	FBox Bounds(Min, Max);
+    for(int i = 0; i < 20; ++i) {
+		FVector SpawnPoint = FMath::RandPointInBox(Bounds);
+		UE_LOG(LogTemp, Warning, TEXT("SpawnPoint: %s"), *SpawnPoint.ToCompactString());
+    }
 }
 
 // Called when the game starts or when spawned
