@@ -15,14 +15,18 @@ public:
 	// Sets default values for this actor's properties
 	ATile();
 protected:
-	// Called when the game starts or when spawned
+	// Called when the game starts or when spaconst TSubclassOf<AActor>&wned
 	virtual void BeginPlay() override;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 public:
-	UFUNCTION(BlueprintCallable, Category = "Generating")
-	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn);
+    
+    UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius);
 private:
-	bool CastSphere(FVector Location, float Radius);
+	bool CanSpawnAtLocation(FVector GlobalLocation, float Radius);
+
+    bool FindEmptyLocation(FVector& OutLocation, float Radius);
+	void PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint);
 };

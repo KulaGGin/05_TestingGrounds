@@ -9,47 +9,70 @@ ATile::ATile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	auto SphereLocation = GetActorLocation();
-	auto SphereRadius = 300.f;
-	bool HasHit = CastSphere(SphereLocation, SphereRadius);
-	HasHit = CastSphere(SphereLocation + FVector(0,0, 1000), SphereRadius);
 }
 
-void ATile::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn) {
-	FVector Min(0, -2000, 0);
-	FVector Max(4000, 2000, 0);
-	FBox Bounds(Min, Max);
+void ATile::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius) {
+
 	int NumberToSpawn = FMath::RandRange(MinSpawn, MaxSpawn);
 
     for(int i = 0; i < NumberToSpawn; ++i) {
-		FVector SpawnPoint = FMath::RandPointInBox(Bounds);
-		AActor* Spawned = GetWorld()->SpawnActor<AActor>(ToSpawn, SpawnPoint, FRotator{});
-		Spawned->SetActorRelativeLocation(SpawnPoint);
-		Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
+		FVector SpawnPoint;
+        bool Found = FindEmptyLocation(SpawnPoint, Radius);
+		if(Found)
+		{
+			PlaceActor(ToSpawn, SpawnPoint);
+		}
     }
 }
 
-bool ATile::CastSphere(FVector Location, float Radius) {
+bool ATile::FindEmptyLocation(FVector& OutLocation, float Radius)
+{
+    FVector Min(0, -2000, 0);
+    FVector Max(4000, 2000, 0);
+    FBox Bounds(Min, Max);
+
+	const int MAX_ATTEMPTS = 100;
+
+	for(size_t i = 0; i < MAX_ATTEMPTS; ++i)
+	{
+	    FVector CandidatePoint = FMath::RandPointInBox(Bounds);
+		if(CanSpawnAtLocation(CandidatePoint, Radius))
+		{
+			OutLocation = CandidatePoint;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void ATile::PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint)
+{
+	AActor* Spawned = GetWorld()->SpawnActor<AActor>(ToSpawn);
+	Spawned->SetActorRelativeLocation(SpawnPoint);
+	Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
+}
+
+bool ATile::CanSpawnAtLocation(FVector Location, float Radius) {
 	FHitResult HitResult;
+    FVector GlobalLocation = ActorToWorld().TransformPosition(Location);
     bool HasHit = GetWorld()->SweepSingleByChannel(
                                      HitResult,
-                                     Location,
-                                     Location,
+                                     GlobalLocation,
+                                     GlobalLocation,
                                      FQuat::Identity,
                                      ECollisionChannel::ECC_GameTraceChannel2,
                                      FCollisionShape::MakeSphere(Radius)
                                     );
 	FColor Color = HasHit ? FColor::Red : FColor::Green;
-	DrawDebugCapsule(GetWorld(), Location, 0, Radius, FQuat::Identity, Color, true, 100);
-	return HasHit;
+	DrawDebugCapsule(GetWorld(), GlobalLocation, 0, Radius, FQuat::Identity, Color, true, 100);
+	return !HasHit;
 }
 
 // Called when the game starts or when spawned
 void ATile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
