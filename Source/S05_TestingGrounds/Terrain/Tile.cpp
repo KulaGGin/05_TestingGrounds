@@ -2,6 +2,7 @@
 
 
 #include "Tile.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ATile::ATile()
@@ -9,6 +10,10 @@ ATile::ATile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	auto SphereLocation = GetActorLocation();
+	auto SphereRadius = 300.f;
+	bool HasHit = CastSphere(SphereLocation, SphereRadius);
+	HasHit = CastSphere(SphereLocation + FVector(0,0, 1000), SphereRadius);
 }
 
 void ATile::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn) {
@@ -23,6 +28,22 @@ void ATile::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn)
 		Spawned->SetActorRelativeLocation(SpawnPoint);
 		Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
     }
+}
+
+bool ATile::CastSphere(FVector Location, float Radius) {
+	FHitResult HitResult;
+    bool HasHit = GetWorld()->SweepSingleByChannel(
+                                     HitResult,
+                                     Location,
+                                     Location,
+                                     FQuat::Identity,
+                                     ECollisionChannel::ECC_Camera,
+                                     FCollisionShape::MakeSphere(Radius)
+                                    );
+	FColor SphereColor = HasHit ? FColor::Red : FColor::Green;
+	DrawDebugSphere(GetWorld(), Location, Radius, 32, SphereColor, true, 100);
+
+	return HasHit;
 }
 
 // Called when the game starts or when spawned
