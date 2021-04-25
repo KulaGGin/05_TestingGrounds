@@ -23,10 +23,10 @@ public:
 public:
     
     UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius);
+	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale);
 private:
 	bool CanSpawnAtLocation(FVector GlobalLocation, float Radius);
 
     bool FindEmptyLocation(FVector& OutLocation, float Radius);
-	void PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint);
+	void PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint, float Rotation, float Scale);
 };
