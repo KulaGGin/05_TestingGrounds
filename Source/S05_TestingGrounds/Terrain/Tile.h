@@ -3,8 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
+
+USTRUCT()
+struct FSpawnPosition
+{
+    GENERATED_USTRUCT_BODY()
+    FVector Location;
+    float Rotation;
+    float Scale;
+};
 
 class UActorPool;
 UCLASS()
@@ -33,7 +53,7 @@ private:
 	bool CanSpawnAtLocation(FVector GlobalLocation, float Radius);
 
     bool FindEmptyLocation(FVector& OutLocation, float Radius);
-	void PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint, float Rotation, float Scale);
+	void PlaceActor(TSubclassOf<AActor> ToSpawn, const FSpawnPosition& SpawnPosition);
     void PositionNavMeshBoundsVolume();
 
     UFUNCTION(BlueprintCallable, Category = "Pool")
@@ -41,4 +61,6 @@ private:
 
 	UActorPool* Pool;
 	AActor* NavMeshBoundsVolume;
+
+    TArray<FSpawnPosition> RandomSpawnPositions(int MinSpawn, int MaxSpawn, float MinScale, float MaxScale, float Radius);
 };
