@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 #include "DrawDebugHelpers.h"
+#include "NavigationSystem.h"
 #include "../ActorPool.h"
 
 // Sets default values
@@ -66,7 +67,8 @@ void ATile::PositionNavMeshBoundsVolume()
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("[%s] checked out %s"), *GetName(), *NavMeshBoundsVolume->GetName());
-    NavMeshBoundsVolume->SetActorLocation(GetActorLocation());
+    NavMeshBoundsVolume->SetActorLocation(GetActorLocation() + NavigationBoundsOffset);
+	FNavigationSystem::Build(*GetWorld());
 }
 
 void ATile::SetPool(UActorPool* InPool)

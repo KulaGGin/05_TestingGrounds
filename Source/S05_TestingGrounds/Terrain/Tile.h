@@ -25,6 +25,10 @@ protected:
 	FVector MinExtent = FVector(0, -2000, 0);
 	UPROPERTY(EditDefaultsOnly, Category = "Spawming");
 	FVector MaxExtent = FVector(4000, 2000, 0);
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Navigation")
+	FVector NavigationBoundsOffset = FVector(2000, 0, 0);
 private:
 	bool CanSpawnAtLocation(FVector GlobalLocation, float Radius);
 
