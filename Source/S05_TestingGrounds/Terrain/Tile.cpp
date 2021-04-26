@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 #include "DrawDebugHelpers.h"
+#include "../ActorPool.h"
 
 // Sets default values
 ATile::ATile()
@@ -57,6 +58,12 @@ void ATile::PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint, float Ro
 	Spawned->SetActorScale3D(FVector(Scale));
 }
 
+void ATile::SetPool(UActorPool* InPool)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[%s] Setting Pool %s"), *(this->GetName()), *(InPool->GetName()));
+	Pool = InPool;
+}
+
 bool ATile::CanSpawnAtLocation(FVector Location, float Radius) {
 	FHitResult HitResult;
     FVector GlobalLocation = ActorToWorld().TransformPosition(Location);
@@ -68,7 +75,6 @@ bool ATile::CanSpawnAtLocation(FVector Location, float Radius) {
                                      ECollisionChannel::ECC_GameTraceChannel2,
                                      FCollisionShape::MakeSphere(Radius)
                                     );
-	FColor Color = HasHit ? FColor::Red : FColor::Green;
 	return !HasHit;
 }
 
