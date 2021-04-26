@@ -58,8 +58,12 @@ private:
 	bool CanSpawnAtLocation(FVector GlobalLocation, float Radius);
 
     bool FindEmptyLocation(FVector& OutLocation, float Radius);
+
+	template<class T>
+	void RandomlyPlaceActors(TSubclassOf<T> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale);
 	void PlaceActor(TSubclassOf<AActor> ToSpawn, const FSpawnPosition& SpawnPosition);
-	void PlaceAIPawn(TSubclassOf<APawn> ToSpawn, const FSpawnPosition& SpawnPosition);
+	void PlaceActor(TSubclassOf<APawn> ToSpawn, const FSpawnPosition& SpawnPosition);
+
     void PositionNavMeshBoundsVolume();
 
     UFUNCTION(BlueprintCallable, Category = "Pool")
@@ -70,3 +74,4 @@ private:
 
     TArray<FSpawnPosition> RandomSpawnPositions(int MinSpawn, int MaxSpawn, float Radius, float MinScale = 1.f, float MaxScale = 1.f);
 };
+
