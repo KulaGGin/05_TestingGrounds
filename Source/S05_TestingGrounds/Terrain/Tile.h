@@ -14,6 +14,8 @@
 #include "Chaos/AABB.h"
 #include "Chaos/AABB.h"
 #include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
+#include "Chaos/AABB.h"
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
@@ -34,9 +36,12 @@ class S05_TESTINGGROUNDS_API ATile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATile();
-public:	
-    UFUNCTION(BlueprintCallable, Category = "Weapon")
+
+    UFUNCTION(BlueprintCallable, Category = "Spawning")
 	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale);
+
+	UFUNCTION(BlueprintCallable, Category = "Spawning")
+	void PlaceAIPawns(TSubclassOf<APawn> ToSpawn, int MinSpawn, int MaxSpawn, float Radius);
 
 protected:
 	// Called when the game starts or when spaconst TSubclassOf<AActor>&wned
@@ -54,6 +59,7 @@ private:
 
     bool FindEmptyLocation(FVector& OutLocation, float Radius);
 	void PlaceActor(TSubclassOf<AActor> ToSpawn, const FSpawnPosition& SpawnPosition);
+	void PlaceAIPawn(TSubclassOf<APawn> ToSpawn, const FSpawnPosition& SpawnPosition);
     void PositionNavMeshBoundsVolume();
 
     UFUNCTION(BlueprintCallable, Category = "Pool")
@@ -62,5 +68,5 @@ private:
 	UActorPool* Pool;
 	AActor* NavMeshBoundsVolume;
 
-    TArray<FSpawnPosition> RandomSpawnPositions(int MinSpawn, int MaxSpawn, float MinScale, float MaxScale, float Radius);
+    TArray<FSpawnPosition> RandomSpawnPositions(int MinSpawn, int MaxSpawn, float Radius, float MinScale = 1.f, float MaxScale = 1.f);
 };
