@@ -30,9 +30,7 @@ void ATile::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn = 1, int MaxSp
 
 bool ATile::FindEmptyLocation(FVector& OutLocation, float Radius)
 {
-    FVector Min(0, -2000, 0);
-    FVector Max(4000, 2000, 0);
-    FBox Bounds(Min, Max);
+    FBox Bounds(MinExtent, MaxExtent);
 
 	const int MAX_ATTEMPTS = 100;
 
@@ -63,9 +61,11 @@ void ATile::PositionNavMeshBoundsVolume()
     NavMeshBoundsVolume = Pool->Checkout();
 	if(!NavMeshBoundsVolume)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not enough actors in pool."));
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Not enough actors in pool."), *GetName());
 		return;
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[%s] checked out %s"), *GetName(), *NavMeshBoundsVolume->GetName());
     NavMeshBoundsVolume->SetActorLocation(GetActorLocation());
 }
 
@@ -91,21 +91,18 @@ bool ATile::CanSpawnAtLocation(FVector Location, float Radius) {
 	return !HasHit;
 }
 
-// Called when the game starts or when spawned
-void ATile::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void ATile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-    Pool->Return(NavMeshBoundsVolume);
-}
 
-// Called every frame
-void ATile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	if(NavMeshBoundsVolume)
+	{
+		Pool->Return(NavMeshBoundsVolume);
+		UE_LOG(LogTemp, Warning, TEXT("[%s]: returned %s"), *GetName(), *NavMeshBoundsVolume->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s]: tried to return null"), *GetName());
+	}
 }
 

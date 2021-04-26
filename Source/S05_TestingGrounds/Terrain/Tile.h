@@ -14,16 +14,17 @@ class S05_TESTINGGROUNDS_API ATile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATile();
-protected:
-	// Called when the game starts or when spaconst TSubclassOf<AActor>&wned
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
     UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale);
+
+protected:
+	// Called when the game starts or when spaconst TSubclassOf<AActor>&wned
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	UPROPERTY(EditDefaultsOnly, Category = "Spawming");
+	FVector MinExtent = FVector(0, -2000, 0);
+	UPROPERTY(EditDefaultsOnly, Category = "Spawming");
+	FVector MaxExtent = FVector(4000, 2000, 0);
 private:
 	bool CanSpawnAtLocation(FVector GlobalLocation, float Radius);
 
