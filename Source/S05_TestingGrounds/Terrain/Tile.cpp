@@ -3,7 +3,6 @@
 
 #include "Tile.h"
 #include "DrawDebugHelpers.h"
-#include "EngineUtils.h"
 
 // Sets default values
 ATile::ATile()
@@ -77,14 +76,6 @@ bool ATile::CanSpawnAtLocation(FVector Location, float Radius) {
 void ATile::BeginPlay()
 {
 	Super::BeginPlay();
-
-	TActorIterator<AActor> ActorIterator = TActorIterator<AActor>(GetWorld());
-    while(ActorIterator)
-    {
-		AActor* FoundActor = *ActorIterator;
-		UE_LOG(LogTemp, Warning, TEXT("Found Actor: %s"), *FoundActor->GetName());
-		++ActorIterator;
-    }
 }
 
 // Called every frame
